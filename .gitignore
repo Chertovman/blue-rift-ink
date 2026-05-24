@@ -12,6 +12,7 @@ broadcast/
 .agents/
 skills-lock.json
 console-three.md
+demo/
 
 # Local licensed music files can be large or private.
 public/music/*.mp3

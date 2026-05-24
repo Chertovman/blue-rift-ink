@@ -67,7 +67,7 @@ https://github.com/Chertovman/blue-rift-ink
 
 ## Demo Video URL
 
-Placeholder: `https://...`
+https://github.com/Chertovman/blue-rift-ink/releases/download/demo-v1/2026-05-24.16.12.07.mov
 
 ## Metrics
 
