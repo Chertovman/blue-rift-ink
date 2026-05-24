@@ -63,7 +63,7 @@ https://blue-rift-ink.vercel.app
 
 ## GitHub URL
 
-Placeholder: `https://github.com/...`
+https://github.com/Chertovman/blue-rift-ink
 
 ## Demo Video URL
 
