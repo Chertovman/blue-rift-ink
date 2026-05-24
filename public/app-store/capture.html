@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blue Rift App Store Capture</title>
+    <style>
+      :root {
+        --bg: #050814;
+        --cyan: #22d3ee;
+        --pink: #fb4dff;
+        --lime: #b6ff4d;
+        --amber: #ffd166;
+        --slate: #cbd5e1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: var(--bg);
+        color: #f8fbff;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .canvas {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 16% 8%, rgba(34, 211, 238, 0.26), transparent 30rem),
+          radial-gradient(circle at 88% 14%, rgba(255, 209, 102, 0.16), transparent 28rem),
+          radial-gradient(circle at 50% 88%, rgba(251, 77, 255, 0.18), transparent 38rem),
+          linear-gradient(180deg, #050814 0%, #0d1326 52%, #050814 100%);
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.35;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+        background-size: 96px 96px;
+        mask-image: linear-gradient(to bottom, transparent, black 12%, black 84%, transparent);
+      }
+
+      .screen {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        height: 100%;
+        padding: 92px 72px;
+      }
+
+      .portrait {
+        flex-direction: column;
+        gap: 48px;
+      }
+
+      .landscape {
+        align-items: center;
+        gap: 54px;
+        padding: 56px 72px;
+      }
+
+      .brand {
+        color: var(--cyan);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 31px;
+        font-weight: 950;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .headline {
+        margin: 20px 0 0;
+        font-size: 126px;
+        font-weight: 950;
+        letter-spacing: 0;
+        line-height: 0.87;
+        text-transform: uppercase;
+      }
+
+      .subhead {
+        margin: 30px 0 0;
+        max-width: 950px;
+        color: var(--slate);
+        font-size: 43px;
+        font-weight: 750;
+        line-height: 1.18;
+      }
+
+      .panel {
+        border: 2px solid rgba(148, 163, 184, 0.24);
+        border-radius: 18px;
+        background: rgba(9, 16, 34, 0.84);
+        box-shadow:
+          0 0 0 2px rgba(34, 211, 238, 0.08) inset,
+          0 46px 120px rgba(0, 0, 0, 0.38);
+        backdrop-filter: blur(18px);
+      }
+
+      .game-window {
+        position: relative;
+        min-height: 900px;
+        overflow: hidden;
+      }
+
+      .tunnel {
+        position: absolute;
+        inset: 34px;
+        overflow: hidden;
+        border: 2px solid rgba(34, 211, 238, 0.32);
+        border-radius: 10px;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.14), transparent 27%),
+          repeating-radial-gradient(circle at 50% 50%, transparent 0 72px, rgba(34, 211, 238, 0.22) 74px 78px),
+          #020617;
+      }
+
+      .tunnel::before,
+      .tunnel::after {
+        position: absolute;
+        inset: -30%;
+        content: "";
+        background:
+          linear-gradient(90deg, transparent 48%, rgba(34, 211, 238, 0.45) 49%, transparent 50%),
+          linear-gradient(0deg, transparent 48%, rgba(251, 77, 255, 0.26) 49%, transparent 50%);
+        transform: perspective(700px) rotateX(58deg);
+      }
+
+      .ship {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 142px;
+        height: 218px;
+        transform: translate(-50%, -50%);
+      }
+
+      .ship .body {
+        position: absolute;
+        left: 50%;
+        width: 48px;
+        height: 170px;
+        transform: translateX(-50%);
+        background: #67e8f9;
+        box-shadow: 0 0 72px rgba(103, 232, 249, 0.9);
+      }
+
+      .ship .wing {
+        position: absolute;
+        top: 82px;
+        width: 56px;
+        height: 54px;
+        background: var(--pink);
+      }
+
+      .ship .wing.left {
+        left: 0;
+      }
+
+      .ship .wing.right {
+        right: 0;
+      }
+
+      .ship .flame {
+        position: absolute;
+        bottom: -18px;
+        left: 50%;
+        width: 42px;
+        height: 62px;
+        transform: translateX(-50%);
+        background: var(--lime);
+        box-shadow: 0 0 62px rgba(182, 255, 77, 0.86);
+      }
+
+      .blocker,
+      .energy {
+        position: absolute;
+        box-shadow: 0 0 36px currentColor;
+      }
+
+      .blocker {
+        width: 120px;
+        height: 120px;
+        color: #ff365d;
+        background: #ff365d;
+      }
+
+      .energy {
+        width: 62px;
+        height: 62px;
+        color: var(--lime);
+        background: var(--lime);
+      }
+
+      .hud {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .stat {
+        padding: 26px;
+      }
+
+      .stat-label {
+        color: #94a3b8;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 23px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        margin-top: 12px;
+        color: #cffafe;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 46px;
+        font-weight: 950;
+      }
+
+      .button {
+        display: flex;
+        min-height: 92px;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--cyan);
+        border-radius: 16px;
+        background: var(--cyan);
+        color: #020617;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 30px;
+        font-weight: 950;
+        text-transform: uppercase;
+      }
+
+      .ghost {
+        background: rgba(34, 211, 238, 0.1);
+        color: #cffafe;
+      }
+
+      .modal {
+        padding: 46px;
+        text-align: center;
+      }
+
+      .modal h2 {
+        margin: 8px 0 0;
+        font-size: 80px;
+        font-weight: 950;
+        line-height: 0.95;
+        text-transform: uppercase;
+      }
+
+      .score-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-top: 36px;
+      }
+
+      .score-cell {
+        padding: 30px;
+        border: 2px solid rgba(34, 211, 238, 0.25);
+        border-radius: 16px;
+      }
+
+      .score-value {
+        margin-top: 12px;
+        color: #cffafe;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 62px;
+        font-weight: 950;
+      }
+
+      .summary {
+        margin-top: 24px;
+        padding: 30px;
+        text-align: left;
+      }
+
+      .leaderboard {
+        display: grid;
+        gap: 0;
+        overflow: hidden;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 130px 1fr 210px;
+        align-items: center;
+        min-height: 110px;
+        padding: 0 34px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 31px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .row.you {
+        color: #d9f99d;
+        background: rgba(182, 255, 77, 0.11);
+        box-shadow: 0 0 0 2px rgba(182, 255, 77, 0.13) inset;
+      }
+
+      .rank {
+        color: #94a3b8;
+      }
+
+      .score {
+        text-align: right;
+      }
+
+      .thumbnail-title {
+        font-size: 108px;
+      }
+
+      .phone {
+        width: 378px;
+        height: 516px;
+        padding: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.16);
+        border-radius: 34px;
+        background: rgba(2, 6, 23, 0.82);
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.42);
+      }
+
+      .phone .game-window {
+        min-height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <div class="grid"></div>
+      <main id="screen" class="screen portrait"></main>
+    </div>
+    <script>
+      const shot = new URLSearchParams(location.search).get("shot") || "gameplay";
+      const screen = document.getElementById("screen");
+
+      function gameWindow() {
+        return `
+          <section class="panel game-window">
+            <div class="tunnel">
+              <div class="blocker" style="left: 74px; top: 120px"></div>
+              <div class="blocker" style="right: 94px; bottom: 170px"></div>
+              <div class="energy" style="right: 190px; top: 210px"></div>
+              <div class="energy" style="left: 168px; bottom: 250px"></div>
+              <div class="ship"><div class="body"></div><div class="wing left"></div><div class="wing right"></div><div class="flame"></div></div>
+            </div>
+          </section>`;
+      }
+
+      function header(copy) {
+        return `
+          <header>
+            <div class="brand">Blue Rift</div>
+            <h1 class="headline">${copy.title}</h1>
+            <p class="subhead">${copy.body}</p>
+          </header>`;
+      }
+
+      if (shot === "gameplay") {
+        screen.innerHTML = `
+          ${header({ title: "Endless Tunnel", body: "Dodge blockers, collect energy, and chase your best run on Ink." })}
+          ${gameWindow()}
+          <section class="hud">
+            <div class="panel stat"><div class="stat-label">Score</div><div class="stat-value">2755</div></div>
+            <div class="panel stat"><div class="stat-label">Hull</div><div class="stat-value">3</div></div>
+            <div class="panel stat"><div class="stat-label">Boost</div><div class="stat-value">84%</div></div>
+          </section>`;
+      } else if (shot === "save") {
+        screen.innerHTML = `
+          ${header({ title: "Save Onchain", body: "Record your best score, run count, survival time, and Score 1000+ achievement on Ink." })}
+          <section class="panel modal">
+            <div class="brand" style="color: var(--pink)">Tunnel breach</div>
+            <h2>Game Over</h2>
+            <div class="score-grid">
+              <div class="score-cell"><div class="stat-label">Final</div><div class="score-value">2755</div></div>
+              <div class="score-cell"><div class="stat-label">Best</div><div class="score-value">2755</div></div>
+            </div>
+            <div style="display: grid; gap: 22px; margin-top: 34px">
+              <div class="button ghost">Share score</div>
+              <div class="panel summary">
+                <div class="hud">
+                  <div><div class="stat-label">Onchain best</div><div class="stat-value">2755</div></div>
+                  <div><div class="stat-label">Saved runs</div><div class="stat-value">2</div></div>
+                  <div><div class="stat-label">1000+</div><div class="stat-value">Yes</div></div>
+                </div>
+              </div>
+              <div class="button">Save onchain</div>
+            </div>
+          </section>`;
+      } else if (shot === "leaderboard") {
+        screen.innerHTML = `
+          ${header({ title: "Ink Scores", body: "Local best is instant. Connected wallets can save verified runs onchain." })}
+          <section class="panel leaderboard">
+            ${[
+              ["#1", "YOU ONCHAIN", "2755", true],
+              ["#2", "NEON-7", "1260"],
+              ["#3", "PIXELJET", "1125"],
+              ["#4", "ORBIT-03", "980"],
+              ["#5", "STARBYTE", "835"],
+              ["#6", "VOIDRUN", "720"],
+              ["#7", "YOU LOCAL", "2755"],
+            ].map(([rank, name, score, you]) => `<div class="row ${you ? "you" : ""}"><span class="rank">${rank}</span><span>${name}</span><span class="score">${score}</span></div>`).join("")}
+          </section>
+          <section class="hud">
+            <div class="panel stat"><div class="stat-label">Network</div><div class="stat-value">Ink</div></div>
+            <div class="panel stat"><div class="stat-label">Builder</div><div class="stat-value">Code</div></div>
+            <div class="panel stat"><div class="stat-label">Status</div><div class="stat-value">Live</div></div>
+          </section>`;
+      } else {
+        screen.className = "screen landscape";
+        screen.innerHTML = `
+          <section style="width: 650px">
+            <div class="brand">Blue Rift</div>
+            <h1 class="headline thumbnail-title">Endless Tunnel Runner</h1>
+            <p class="subhead" style="font-size: 31px">A neon arcade game with optional onchain score saves on Ink.</p>
+            <div style="display: flex; gap: 18px; margin-top: 34px">
+              <div class="button" style="min-height: 70px; padding: 0 34px; font-size: 22px">Play now</div>
+              <div class="button ghost" style="min-height: 70px; padding: 0 34px; font-size: 22px">Ink ready</div>
+            </div>
+          </section>
+          <section class="phone">${gameWindow()}</section>`;
+      }
+    </script>
+  </body>
+</html>

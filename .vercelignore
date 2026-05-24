@@ -1,0 +1,8 @@
+.env*
+.next/
+node_modules/
+contracts/cache/
+contracts/out/
+broadcast/
+.playwright-mcp/
+*console*.txt

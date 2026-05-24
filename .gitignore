@@ -1,0 +1,20 @@
+.env.local
+.next/
+node_modules/
+tsconfig.tsbuildinfo
+contracts/cache/
+contracts/out/
+broadcast/
+*console*.txt
+.DS_Store
+.playwright-mcp/
+.pnpm-store/
+.agents/
+skills-lock.json
+console-three.md
+
+# Local licensed music files can be large or private.
+public/music/*.mp3
+public/music/*.wav
+public/music/*.ogg
+.vercel
